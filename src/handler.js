@@ -70,4 +70,19 @@ const createBook = (request, h) => {
   }
 };
 
-module.exports = { createBook };
+const getAllBooks = (request, h) => {
+  const response = h.response({
+    status: "success",
+    data: {
+      books: databaseBooks.map((book) => ({
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+      })),
+    },
+  });
+  response.code(200);
+  return response;
+};
+
+module.exports = { createBook, getAllBooks };
