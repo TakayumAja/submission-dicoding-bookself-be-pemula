@@ -159,7 +159,6 @@ const updateBook = (request, h) => {
     const response = h.response({
       status: "success",
       message: "Buku berhasil diperbarui",
-      data: databaseBooks[findIndexBook],
     });
     response.code(200);
     return response;
@@ -173,4 +172,32 @@ const updateBook = (request, h) => {
   return response;
 };
 
-module.exports = { createBook, getAllBooks, getDetailBook, updateBook };
+const deleteBook = (request, h) => {
+  const { bookId } = request.params;
+  const findIndexBook = databaseBooks.findIndex((book) => book.id === bookId);
+
+  if (findIndexBook !== -1) {
+    databaseBooks.splice(findIndexBook, 1);
+    const response = h.response({
+      status: "success",
+      message: "Buku berhasil dihapus",
+    });
+    response.code(200);
+    return response;
+  }
+
+  const response = h.response({
+    status: "fail",
+    message: "Buku gagal dihapus. Id tidak ditemukan",
+  });
+  response.code(400);
+  return response;
+};
+
+module.exports = {
+  createBook,
+  getAllBooks,
+  getDetailBook,
+  updateBook,
+  deleteBook,
+};
