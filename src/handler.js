@@ -71,10 +71,31 @@ const createBook = (request, h) => {
 };
 
 const getAllBooks = (request, h) => {
+  const { reading, name, finished } = request.query;
+  let databaseBooksFilter = databaseBooks;
+
+  if (name !== undefined) {
+    databaseBooksFilter = databaseBooks.filter((book) =>
+      book.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+
+  if (reading !== undefined) {
+    databaseBooksFilter = databaseBooks.filter(
+      (book) => book.reading === (reading === "1")
+    );
+  }
+
+  if (finished !== undefined) {
+    databaseBooksFilter = databaseBooks.filter(
+      (book) => book.finished === (finished === "1")
+    );
+  }
+
   const response = h.response({
     status: "success",
     data: {
-      books: databaseBooks.map((book) => ({
+      books: databaseBooksFilter.map((book) => ({
         id: book.id,
         name: book.name,
         publisher: book.publisher,
@@ -190,7 +211,7 @@ const deleteBook = (request, h) => {
     status: "fail",
     message: "Buku gagal dihapus. Id tidak ditemukan",
   });
-  response.code(400);
+  response.code(404);
   return response;
 };
 
